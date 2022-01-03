@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
-
 generator client {
     provider = "prisma-client-js"
     previewFeatures = ["mongoDb"]
@@ -12,4 +10,41 @@ generator client {
 datasource db {
     provider = "mongodb"
     url      = env("DATABASE_URL")
+}
+
+model Me {
+    id          String      @id @default(dbgenerated()) @map("_id") @db.ObjectId
+    name        String?      
+    nickname    String
+    password    String
+    isJob       String?
+}
+
+model PartLife {
+    id      String      @id @default(dbgenerated()) @map("_id") @db.ObjectId
+    name    String
+    exp     Experiences[]
+}
+
+model Experiences {
+    id          String      @id @default(dbgenerated()) @map("_id") @db.ObjectId
+    date        DateTime?   
+    title       String?
+    where       String?
+    summary     String?
+    PartLife    PartLife?   @relation(fields: [PartLifeId], references: [id])
+    PartLifeId  String      @db.ObjectId
+}
+
+model Project {
+    id      String      @id @default(dbgenerated()) @map("_id") @db.ObjectId
+    name    String?
+    cat     CatProjets? @relation(fields: [catId], references: [id])
+    catId   String      @db.ObjectId
+}
+
+model CatProjets {
+    id          String      @id @default(dbgenerated()) @map("_id") @db.ObjectId
+    name        String
+    projects    Project[]
 }
